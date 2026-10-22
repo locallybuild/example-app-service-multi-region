@@ -108,18 +108,16 @@ dotnet test
 Each request the tests make has 10 seconds to complete.
 
 > [!TIP]
-> Locally can simulate a region going down. Try taking London's Storage and Service Bus offline with `locally chaos`, then run the tests again, or ask your coding agent how the API behaves when its primary region is unavailable.
+> Locally can simulate a region going down. Try taking London's Storage offline with `locally chaos`, then run the tests again, or ask your coding agent how the API behaves when its primary region is unavailable.
 >
 > ```bash
 > locally chaos storage outage --percentage 100 --location london
-> locally chaos servicebus outage --percentage 100 --location london
 > ```
 >
 > To bring London back:
 >
 > ```bash
 > locally chaos storage reset
-> locally chaos servicebus reset
 > ```
 
 ## Notes
@@ -147,5 +145,4 @@ If you armed any chaos faults, reset them too:
 
 ```bash
 locally chaos storage reset
-locally chaos servicebus reset
 ```
