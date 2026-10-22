@@ -63,8 +63,8 @@ async Task<IResult> WithinBudget(HttpContext http, Func<CancellationToken, Task<
     {
         app.Logger.LogWarning("Request to {Path} timed out after {Budget}", http.Request.Path, budget);
         return Results.Problem(
-            title: "Timed out waiting for storage",
-            detail: $"The order service didn't respond within {budget.TotalSeconds:0} seconds.",
+            title: "The request timed out",
+            detail: $"Storage or Service Bus didn't respond within {budget.TotalSeconds:0} seconds.",
             statusCode: StatusCodes.Status504GatewayTimeout);
     }
 }
