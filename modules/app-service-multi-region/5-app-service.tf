@@ -43,12 +43,16 @@ resource "azurerm_linux_web_app" "api" {
     WEBSITES_PORT = tostring(local.app_port)
     PORT          = tostring(local.app_port)
 
-    # Where orders are stored and announced. ASP.NET Core reads these as
-    # ConnectionStrings:Storage and ConnectionStrings:ServiceBus.
-    ConnectionStrings__Storage    = azurerm_storage_account.main["primary"].primary_blob_connection_string
-    ConnectionStrings__ServiceBus = azurerm_servicebus_namespace.main["primary"].default_primary_connection_string
-    Orders__Container             = azurerm_storage_container.orders["primary"].name
-    Orders__Queue                 = azurerm_servicebus_queue.orders["primary"].name
+    # The Storage Account and Service Bus namespace in each region. ASP.NET Core
+    # reads these as ConnectionStrings:StoragePrimary and so on.
+    ConnectionStrings__StoragePrimary      = azurerm_storage_account.main["primary"].primary_blob_connection_string
+    ConnectionStrings__StorageSecondary    = azurerm_storage_account.main["secondary"].primary_blob_connection_string
+    ConnectionStrings__ServiceBusPrimary   = azurerm_servicebus_namespace.main["primary"].default_primary_connection_string
+    ConnectionStrings__ServiceBusSecondary = azurerm_servicebus_namespace.main["secondary"].default_primary_connection_string
+
+    # Both regions use the same container and queue names.
+    Orders__Container = azurerm_storage_container.orders["primary"].name
+    Orders__Queue     = azurerm_servicebus_queue.orders["primary"].name
   }
 
   # The image must exist in the registry before the app starts.

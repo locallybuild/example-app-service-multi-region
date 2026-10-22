@@ -9,17 +9,31 @@ builder.WebHost.UseUrls($"http://+:{builder.Configuration["PORT"] ?? "8080"}");
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddSingleton(_ => new BlobContainerClient(
-    builder.Configuration.GetConnectionString("Storage"),
-    builder.Configuration["Orders:Container"] ?? "orders"));
+var container = builder.Configuration["Orders:Container"] ?? "orders";
+var queue = builder.Configuration["Orders:Queue"] ?? "orders";
 
-builder.Services.AddSingleton(_ => new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBus")));
-builder.Services.AddSingleton(sp => sp.GetRequiredService<ServiceBusClient>()
-    .CreateSender(builder.Configuration["Orders:Queue"] ?? "orders"));
+// One set of clients per region, keyed by "primary" and "secondary", built from
+// ConnectionStrings:StoragePrimary, ConnectionStrings:ServiceBusSecondary and so on.
+foreach (var region in new[] { "primary", "secondary" })
+{
+    var suffix = char.ToUpperInvariant(region[0]) + region[1..];
 
-builder.Services.AddSingleton<OrderStore>();
+    builder.Services.AddKeyedSingleton(region, (_, _) => new BlobContainerClient(
+        builder.Configuration.GetConnectionString($"Storage{suffix}"), container));
+
+    builder.Services.AddKeyedSingleton(region, (_, _) => new ServiceBusClient(
+        builder.Configuration.GetConnectionString($"ServiceBus{suffix}")));
+}
+
+builder.Services.AddSingleton(sp => new OrderStore(
+    sp.GetRequiredKeyedService<BlobContainerClient>("primary"),
+    sp.GetRequiredKeyedService<ServiceBusClient>("primary").CreateSender(queue)));
+
+builder.Services.AddOrderHealthChecks(queue);
 
 var app = builder.Build();
+
+app.MapOrderHealthChecks();
 
 // How long a request may spend talking to Storage and Service Bus before the API
 // gives up and tells the caller, rather than leaving them waiting on SDK retries.
