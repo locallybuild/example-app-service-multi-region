@@ -9,6 +9,7 @@ public class GetOrderTests
     public async Task PlaceThenGet_ReturnsSameOrder()
     {
         var placed = await Api.PlaceOrderAsync(("pain-au-chocolat", 3));
+        Assert.Equal(HttpStatusCode.Created, placed.StatusCode);
         var created = await placed.Content.ReadFromJsonAsync<Order>(Api.Json, TestContext.Current.CancellationToken);
 
         var fetched = await Api.Client.GetFromJsonAsync<Order>($"/orders/{created!.Id}", Api.Json, TestContext.Current.CancellationToken);

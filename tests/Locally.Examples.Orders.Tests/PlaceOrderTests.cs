@@ -31,6 +31,8 @@ public class PlaceOrderTests
         var first = await Api.PlaceOrderAsync(("croissant", 1));
         var second = await Api.PlaceOrderAsync(("croissant", 1));
 
+        Assert.Equal(HttpStatusCode.Created, first.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, second.StatusCode);
         var a = await first.Content.ReadFromJsonAsync<Order>(Api.Json, TestContext.Current.CancellationToken);
         var b = await second.Content.ReadFromJsonAsync<Order>(Api.Json, TestContext.Current.CancellationToken);
         Assert.NotEqual(a!.Id, b!.Id);

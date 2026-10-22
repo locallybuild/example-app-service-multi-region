@@ -15,14 +15,16 @@ o888ooooood8 `Y8bod8P' `Y8bod8P' `Y888""8o o888o o888o     .8'
 This example deploys a small orders API, written in .NET, to App Service on [Locally Build](https://locally.build). Each order is saved to Blob Storage and announced on a Service Bus queue. A Storage Account and a Service Bus namespace are deployed in two regions: London (primary) and Paris (secondary).
 
 ```
-                         ┌─ london (primary) ──────────────────────────┐
- client ─▶ Orders API ──▶│  Storage Account     container "orders"     │
-           (App Service) │  Service Bus         queue "orders"         │
-                         └─────────────────────────────────────────────┘
-                         ┌─ paris (secondary) ─────────────────────────┐
-                         │  Storage Account     container "orders"     │
-                         │  Service Bus         queue "orders"         │
-                         └─────────────────────────────────────────────┘
+                         ┌───────────────────────────────────────────────────┐
+                         │ ┌─ london (primary) ──────────────────────────┐   │
+                         │ │  Storage Account     container "orders"     │   │
+                         │ │  Service Bus         queue "orders"         │   │
+ client ─▶ Orders API ──▶│ └─────────────────────────────────────────────┘   │
+           (App Service) │ ┌─ paris (secondary) ─────────────────────────┐   │
+                         │ │  Storage Account     container "orders"     │   │
+                         │ │  Service Bus         queue "orders"         │   │
+                         │ └─────────────────────────────────────────────┘   │
+                         └───────────────────────────────────────────────────┘
 ```
 
 The API lives in [`app/`](./app) and the end-to-end tests in [`tests/`](./tests). The API has these endpoints:
