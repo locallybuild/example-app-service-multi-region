@@ -49,6 +49,8 @@ A request that's still waiting on Storage or Service Bus after 30 seconds gets a
 * The Locally Plugin for `Microsoft.ServiceBus` installed (`locally plugin install --name Microsoft.ServiceBus`).
 * The Locally Plugin for `Microsoft.Web` installed (`locally plugin install --name Microsoft.Web`).
 * The Locally Plugin for `Microsoft.ContainerRegistry` installed (`locally plugin install --name Microsoft.ContainerRegistry`).
+* The Locally Plugin for `Microsoft.Insights` installed (`locally plugin install --name Microsoft.Insights`).
+* The Locally Plugin for `Microsoft.OperationalInsights` installed (`locally plugin install --name Microsoft.OperationalInsights`).
 
 ## Running the example
 

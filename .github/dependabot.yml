@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Terraform providers
+  - package-ecosystem: "terraform"
+    directories:
+      - "/environments/locally"
+      - "/modules/app-service-multi-region"
+    schedule:
+      interval: "weekly"
+    groups:
+      terraform:
+        patterns:
+          - "*"
+
+  # .NET dependencies
+  - package-ecosystem: "nuget"
+    directories:
+      - "/app/Locally.Examples.Orders"
+      - "/tests/Locally.Examples.Orders.Tests"
+    schedule:
+      interval: "weekly"
+    groups:
+      nuget:
+        patterns:
+          - "*"
+
+  # .NET SDK (global.json)
+  - package-ecosystem: "dotnet-sdk"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dotnet-sdk:
+        patterns:
+          - "*"
+
+  # Container base images
+  - package-ecosystem: "docker"
+    directories:
+      - "/app"
+    schedule:
+      interval: "weekly"
+    groups:
+      docker:
+        patterns:
+          - "*"
+
+  # GitHub Actions used by the CI
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
